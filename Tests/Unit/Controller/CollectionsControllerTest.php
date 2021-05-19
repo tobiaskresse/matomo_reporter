@@ -7,17 +7,17 @@ namespace Slub\MatomoReporter\Tests\Unit\Controller;
  * @author Alexander Bigga <typo3@slub-dresden.de>
  * @author Tobias Kreße <typo3@slub-dresden.de>
  */
-class WebsitesControllerTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
+class CollectionsControllerTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
     /**
-     * @var \Slub\MatomoReporter\Controller\WebsitesController
+     * @var \Slub\MatomoReporter\Controller\CollectionsController
      */
     protected $subject = null;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->subject = $this->getMockBuilder(\Slub\MatomoReporter\Controller\WebsitesController::class)
+        $this->subject = $this->getMockBuilder(\Slub\MatomoReporter\Controller\CollectionsController::class)
             ->setMethods(['redirect', 'forward', 'addFlashMessage'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -31,22 +31,22 @@ class WebsitesControllerTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestC
     /**
      * @test
      */
-    public function listActionFetchesAllWebsitessFromRepositoryAndAssignsThemToView()
+    public function listActionFetchesAllCollectionssFromRepositoryAndAssignsThemToView()
     {
 
-        $allWebsitess = $this->getMockBuilder(\TYPO3\CMS\Extbase\Persistence\ObjectStorage::class)
+        $allCollectionss = $this->getMockBuilder(\TYPO3\CMS\Extbase\Persistence\ObjectStorage::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $websitesRepository = $this->getMockBuilder(\::class)
+        $collectionsRepository = $this->getMockBuilder(\::class)
             ->setMethods(['findAll'])
             ->disableOriginalConstructor()
             ->getMock();
-        $websitesRepository->expects(self::once())->method('findAll')->will(self::returnValue($allWebsitess));
-        $this->inject($this->subject, 'websitesRepository', $websitesRepository);
+        $collectionsRepository->expects(self::once())->method('findAll')->will(self::returnValue($allCollectionss));
+        $this->inject($this->subject, 'collectionsRepository', $collectionsRepository);
 
         $view = $this->getMockBuilder(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface::class)->getMock();
-        $view->expects(self::once())->method('assign')->with('websitess', $allWebsitess);
+        $view->expects(self::once())->method('assign')->with('collectionss', $allCollectionss);
         $this->inject($this->subject, 'view', $view);
 
         $this->subject->listAction();
@@ -55,14 +55,14 @@ class WebsitesControllerTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestC
     /**
      * @test
      */
-    public function showActionAssignsTheGivenWebsitesToView()
+    public function showActionAssignsTheGivenCollectionsToView()
     {
-        $websites = new \Slub\MatomoReporter\Domain\Model\Websites();
+        $collections = new \Slub\MatomoReporter\Domain\Model\Collections();
 
         $view = $this->getMockBuilder(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface::class)->getMock();
         $this->inject($this->subject, 'view', $view);
-        $view->expects(self::once())->method('assign')->with('websites', $websites);
+        $view->expects(self::once())->method('assign')->with('collections', $collections);
 
-        $this->subject->showAction($websites);
+        $this->subject->showAction($collections);
     }
 }
