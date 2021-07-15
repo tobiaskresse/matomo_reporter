@@ -8,8 +8,10 @@ module.tx_matomoreporter_dashboard {
         # cat=module.tx_matomoreporter_dashboard/file; type=string; label=Path to template layouts (BE)
         layoutRootPath = EXT:matomo_reporter/Resources/Private/Backend/Layouts/
     }
+
+    #Storage Page UID
     persistence {
         # cat=module.tx_matomoreporter_dashboard//a; type=string; label=Default storage PID
-        storagePid = 1
+        storagePid = 7
     }
 }

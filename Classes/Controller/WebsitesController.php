@@ -39,4 +39,5 @@ class WebsitesController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     {
         $this->view->assign('websites', $websites);
     }
+
 }
