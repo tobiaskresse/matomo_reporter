@@ -14,4 +14,8 @@ module.tx_matomoreporter_dashboard {
         # cat=module.tx_matomoreporter_dashboard//a; type=string; label=Default storage PID
         storagePid = 7
     }
+
+    #Mail paths
+    $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths'][700] = 'EXT:matomo_reporter/Resources/Private/Templates/Email';
+    $GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths'][700] = 'EXT:matomo_reporter/Resources/Private/Layouts';
 }

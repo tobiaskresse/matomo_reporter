@@ -72,6 +72,33 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
     public function createAction(\Slub\MatomoReporter\Domain\Model\Subscriber $newSubscriber)
     {
+        // Create the message
+        $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+            
+        // Prepare and send the message
+        $mail
+            
+           // Give the message a subject
+           ->setSubject('Hello '. $this->newSubscriber->name)
+            
+           // Set the From address with an associative array
+           ->setFrom(array('Tobias.kresse@slub-dresden.de' => 'John Doe'))
+            
+           // Set the To addresses with an associative array
+           ->setTo(array('Tobias.kresse@slub-dresden.de', $this->newSubscriber->email))
+            
+           // Give it a body
+           ->setBody('Here is the message itself')
+            
+           // And optionally an alternative body
+           ->addPart('<p>Here is the message itself</p>', 'text/html')
+            
+           // Optionally add any attachments
+           //->attach(\Swift_Attachment::fromPath('my-document.pdf'))
+            
+           // And finally do send it
+           ->send()
+         ;
         $this->addFlashMessage('The object was created. Please be aware that this action is publicly accessible unless you implement an access check. See https://docs.typo3.org/typo3cms/extensions/extension_builder/User/Index.html', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING);
         $this->subscriberRepository->add($newSubscriber);
         $this->redirect('list');

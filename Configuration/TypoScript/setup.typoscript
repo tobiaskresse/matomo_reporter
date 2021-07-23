@@ -12,4 +12,9 @@ module.tx_matomoreporter_web_matomoreporterdashboard {
         layoutRootPaths.0 = EXT:matomo_reporter/Resources/Private/Backend/Layouts/
         layoutRootPaths.1 = {$module.tx_matomoreporter_dashboard.view.layoutRootPath}
     }
+
+    $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport'] = 'smtp';
+    $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport_smtp_server'] = '8025';
+
+
 }

@@ -153,7 +153,6 @@ return [
                     ],
                     'addRecord' => [
                         'disabled' => false,
-                        'pid' => 9,
                     ],
                     'listModule' => [
                         'disabled' => true,
