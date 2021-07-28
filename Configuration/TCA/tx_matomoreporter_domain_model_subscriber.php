@@ -146,7 +146,6 @@ return [
                 'autoSizeMax' => 30,
                 'maxitems' => 9999,
                 'multiple' => 0,
-                'itemsProcFunc' => 'Slub\matomo_reporter\Backend\ItemsProcFunc->user_websitesSideBySide',
                 'fieldControl' => [
                     'editPopup' => [
                         'disabled' => false,
@@ -173,16 +172,12 @@ return [
                 'autoSizeMax' => 30,
                 'maxitems' => 9999,
                 'multiple' => 0,
-                'itemsProcFunc' => 'Slub\matomo_reporter\Backend\ItemsProcFunc->user_collectionsSideBySide',
                 'fieldControl' => [
                     'editPopup' => [
                         'disabled' => false,
                     ],
                     'addRecord' => [
                         'disabled' => false,
-                        'options' => [
-                            'pid' => 8,
-                        ],
                     ],
                     'listModule' => [
                         'disabled' => true,

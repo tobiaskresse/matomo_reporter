@@ -61,7 +61,9 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * @return void
      */
     public function newAction()
-    {
+    {            
+        //$this->updateMatomoDataAction();
+
     }
 
     /**
@@ -72,33 +74,7 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
     public function createAction(\Slub\MatomoReporter\Domain\Model\Subscriber $newSubscriber)
     {
-        // Create the message
-        $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
-            
-        // Prepare and send the message
-        $mail
-            
-           // Give the message a subject
-           ->setSubject('Hello '. $this->newSubscriber->name)
-            
-           // Set the From address with an associative array
-           ->setFrom(array('Tobias.kresse@slub-dresden.de' => 'John Doe'))
-            
-           // Set the To addresses with an associative array
-           ->setTo(array('Tobias.kresse@slub-dresden.de', $this->newSubscriber->email))
-            
-           // Give it a body
-           ->setBody('Here is the message itself')
-            
-           // And optionally an alternative body
-           ->addPart('<p>Here is the message itself</p>', 'text/html')
-            
-           // Optionally add any attachments
-           //->attach(\Swift_Attachment::fromPath('my-document.pdf'))
-            
-           // And finally do send it
-           ->send()
-         ;
+        
         $this->addFlashMessage('The object was created. Please be aware that this action is publicly accessible unless you implement an access check. See https://docs.typo3.org/typo3cms/extensions/extension_builder/User/Index.html', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING);
         $this->subscriberRepository->add($newSubscriber);
         $this->redirect('list');
@@ -141,4 +117,154 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $this->subscriberRepository->remove($subscriber);
         $this->redirect('list');
     }
+    
+
+    /**
+     * action updateMatomoData
+     * 
+     * Updates the information that is attached to the Subscribers
+     * 
+     * @return void
+     */
+    public function updateMatomoDataAction()
+    {
+        //$date = new \DateTime;
+        $token = "";
+        $url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=2021-05-05&idSubtable=1&format=JSON&token_auth=" . $token;
+        // variable DateTime
+        //$url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=" . $date->format('y-m-d') . "&idSubtable=1&format=JSON&token_auth=" . $token;
+        $json_raw;
+        $json_done;
+        $json_raw = file_get_contents($url);
+        $json_done = json_decode($json_raw, true);
+        
+        $subscribers = $this->subscriberRepository->findAll();
+
+        foreach($subscribers as $subscriber)
+        {
+            $collections = $subscriber->getCollections();
+            $websites = $subscriber->getWebsites();
+
+
+            foreach($collections as $collection)
+            {
+                foreach($json_done as $item)
+                {
+                    if($collection->getName() == $item["label"])
+                    {
+                        if(is_null($collection->getVisits()) == false)
+                        {
+                            $visits = $collection->getVisits();
+                            $visits->setUniqueVisitors($item["sum_daily_nb_uniq_visitors"]);
+                            $visits->setPageViews($item["nb_visits"]);
+                            //$visits->setMonth($date);
+                            $collection->setVisits($visits);
+                        }else 
+                        {
+                            //somthing should happen here... lets see later what exactly
+                            // how do I create an Visits Object here..?
+                        }
+                    }else{}
+                }
+            }
+            foreach($websites as $website)
+            {
+                foreach($json_done as $item)
+                {
+                    //repeat, for the most part, of what is written above
+
+                    if($website->getName() == $item["label"])
+                    {
+                        #if(is_null($website->getVisits()) == false)
+                        #{
+                            $visits = $website->getVisits();
+                            //$visits->setUniqueVisitors($item["sum_daily_nb_uniq_visitors"]);
+                            $visits->setUniqueVisitors($item["sum_daily_nb_uniq_visitors"]);
+                            $visits->setPageViews($item["nb_visits"]);
+                            //$visits->setMonth($date);
+                            $website->setVisits($visits);
+                        #}else 
+                        #{
+                            //somthing should happen here... lets see later what exactly
+                            // how do I create an Visits Object here..?
+                        #}
+                    }else{}
+                }
+            }
+            $subscriber->setCollections($collections);
+            $subscriber->setWebsites($websites);
+            $this->subscriberRepository->update($subscriber);
+        }
+
+        
+
+    }
+
+    /**
+     * action sendMails
+     * 
+     * sends an Email to all subscribers
+     * 
+     * @return void
+     */
+    public function sendMailsAction()
+    {
+        $subscribers = $this->subscriberRepository->findAll();
+        
+        foreach($subscribers as $subscriber)  
+        {  
+            $collectionNames = "";
+            $websiteNames = "";
+            foreach ($subscriber->getCollections() as $item)
+            {
+                if($collectionNames == "")
+                {
+                    $collectionNames = $collectionNames . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                } else{
+                    $collectionNames = $collectionNames . ",\n" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                }
+            }
+
+            foreach ($subscriber->getWebsites() as $item) 
+            {
+                if($websiteNames == "")
+                {
+                    $websiteNames = $websiteNames . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                } else{
+                    $websiteNames = $websiteNames . ",\n" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                }
+            }
+
+            // Create the message
+            $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+
+            // Prepare and send the message
+            $mail
+
+               // Give the message a subject
+               ->setSubject('Monthly Report')
+
+               // Set the From address with an associative array
+               ->setFrom(array('Tobias.kresse@slub-dresden.de' => 'John Doe'))
+
+               // Set the To addresses with an associative array
+               ->setTo(array($subscriber->getEmail() => $subscriber->getName()))
+
+               // Give it a body
+               ->setBody('Collections: '. $collectionsNames ."\n\nWebsites:\n". $websiteNames)
+
+               // And optionally an alternative body
+               ->addPart('<p>Here is the message itself</p>', 'text/html')
+
+               // Optionally add any attachments
+               //->attach(\Swift_Attachment::fromPath('my-document.pdf'))
+
+               // And finally do send it
+               ->send()
+             ;
+        }
+    }
+
+    
+    
 }

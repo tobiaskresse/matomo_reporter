@@ -16,5 +16,4 @@ module.tx_matomoreporter_web_matomoreporterdashboard {
     $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport'] = 'smtp';
     $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport_smtp_server'] = '8025';
 
-
 }
