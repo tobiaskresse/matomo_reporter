@@ -21,7 +21,7 @@ class  ItemsProcFunc
   public function user_websitesSideBySide(array &$config)
   {
     //api commmunication and decoding
-    $apiAnswer = file_get_contents('https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=2021-05-05&idSubtable=1&format=JSON&token_auth=c4f74d28bff8907dca5445c7c0893c6e'
+    $apiAnswer = file_get_contents('https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=2021-05-05&idSubtable=1&format=JSON&token_auth='
     );
     $apiAnswerDecode = json_decode ($apiAnswer, true);
 
