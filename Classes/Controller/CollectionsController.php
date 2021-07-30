@@ -15,7 +15,7 @@ namespace Slub\MatomoReporter\Controller;
 /**
  * CollectionsController
  */
-class CollectionsController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class CollectionsController extends AbstractController
 {
 
     /**
