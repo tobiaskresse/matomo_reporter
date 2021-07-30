@@ -15,24 +15,23 @@ namespace Slub\MatomoReporter\Controller;
 /**
  * SubscriberController
  */
-class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class SubscriberController extends AbstractController
 {
 
-    /**
-     * subscriberRepository
-     * 
-     * @var \Slub\MatomoReporter\Domain\Repository\SubscriberRepository
-     */
-    protected $subscriberRepository = null;
-
-    /**
-     * @param \Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository
-     */
-    public function injectSubscriberRepository(\Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository)
-    {
-        $this->subscriberRepository = $subscriberRepository;
-    }
-
+  //  /**
+  //   * subscriberRepository
+  //   * 
+  //   * @var \Slub\MatomoReporter\Domain\Repository\SubscriberRepository
+  //   */
+  //  protected $subscriberRepository = null;
+//
+  //  /**
+  //   * @param \Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository
+  //   */
+  //  public function injectSubscriberRepository(\Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository)
+  //  {
+  //      $this->subscriberRepository = $subscriberRepository;
+  //  }
     /**
      * action list
      * 
@@ -43,7 +42,7 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $subscribers = $this->subscriberRepository->findAll();
         $this->view->assign('subscribers', $subscribers);
     }
-
+    
     /**
      * action show
      * 
@@ -54,7 +53,7 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     {
         $this->view->assign('subscriber', $subscriber);
     }
-
+    
     /**
      * action new
      * 
@@ -63,9 +62,9 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     public function newAction()
     {            
         //$this->updateMatomoDataAction();
-
+        
     }
-
+    
     /**
      * action create
      * 
@@ -79,7 +78,7 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $this->subscriberRepository->add($newSubscriber);
         $this->redirect('list');
     }
-
+    
     /**
      * action edit
      * 
@@ -91,7 +90,7 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     {
         $this->view->assign('subscriber', $subscriber);
     }
-
+    
     /**
      * action update
      * 
@@ -104,7 +103,7 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $this->subscriberRepository->update($subscriber);
         $this->redirect('list');
     }
-
+    
     /**
      * action delete
      * 
@@ -118,15 +117,7 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $this->redirect('list');
     }
     
-
-    /**
-     * action updateMatomoData
-     * 
-     * Updates the information that is attached to the Subscribers
-     * 
-     * @return void
-     */
-    public function updateMatomoDataAction()
+    public function createMatomoDataAction()
     {
         //$date = new \DateTime;
         $token = "";
@@ -138,16 +129,72 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $json_raw = file_get_contents($url);
         $json_done = json_decode($json_raw, true);
         
+        
+    }
+    
+    //GerneralUtility Make Instance (objct)
+    /**
+     * action updateMatomoData
+     * 
+     * Updates the information that is attached to the Subscribers
+     * 
+     * @return void
+     */
+    public function updateMatomoDataAction()
+    {
+        $date = new \DateTime;
+        //var_dump($date);
+        $token = "";
+        $url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=2021-05-05&idSubtable=1&format=JSON&token_auth=" . $token;
+        // variable DateTime
+        //$url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=" . $date->format('y-m-d') . "&idSubtable=1&format=JSON&token_auth=" . $token;
+        $json_raw;
+        $json_done;
+        $json_raw = file_get_contents($url);
+        $json_done = json_decode($json_raw, true);
+        
         $subscribers = $this->subscriberRepository->findAll();
-
+        
         foreach($subscribers as $subscriber)
         {
             $collections = $subscriber->getCollections();
             $websites = $subscriber->getWebsites();
-
-
-            foreach($collections as $collection)
+            
+            $newJsonCollections = array();
+            $newJsonWebsites = array();
+            
+            //adding the things that arent in there
+            foreach($json_done as $item)
             {
+                foreach($collections as $collection)
+                {
+                    if($item["label"] == $collection->getName())
+                    {
+                        break;
+                    }
+                    else{
+                        array_push($newJsonCollections, $collection);
+                    }
+                }
+
+
+                foreach($websites as $website)
+                {
+                    if($item["label"] == $website->getName())
+                    {
+                        break;
+                    }else{
+                        array_push($newJsonWebsites, $website);
+                    }
+                }
+            }
+            //var_dump($newJsonCollections);
+            var_dump($newJsonWebsites);
+
+
+            //Collections
+            foreach($collections as $collection)
+            { //how do i get an comparison between the collections I have and the new ones, to find witch new are new and witch are already there
                 foreach($json_done as $item)
                 {
                     if($collection->getName() == $item["label"])
@@ -161,12 +208,13 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                             $collection->setVisits($visits);
                         }else 
                         {
-                            //somthing should happen here... lets see later what exactly
-                            // how do I create an Visits Object here..?
+                            //maybe an flash message warning 
                         }
                     }else{}
                 }
             }
+            
+            //Websites
             foreach($websites as $website)
             {
                 foreach($json_done as $item)
@@ -175,19 +223,19 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
                     if($website->getName() == $item["label"])
                     {
-                        #if(is_null($website->getVisits()) == false)
-                        #{
+                        if(is_null($website->getVisits()) == false)
+                        {
                             $visits = $website->getVisits();
-                            //$visits->setUniqueVisitors($item["sum_daily_nb_uniq_visitors"]);
                             $visits->setUniqueVisitors($item["sum_daily_nb_uniq_visitors"]);
+                            //$visits->setUniqueVisitors(100);
                             $visits->setPageViews($item["nb_visits"]);
                             //$visits->setMonth($date);
                             $website->setVisits($visits);
-                        #}else 
-                        #{
-                            //somthing should happen here... lets see later what exactly
-                            // how do I create an Visits Object here..?
-                        #}
+                        }else 
+                        {
+                            //maybe an flash message warning
+                            
+                        }
                     }else{}
                 }
             }
@@ -195,10 +243,9 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             $subscriber->setWebsites($websites);
             $this->subscriberRepository->update($subscriber);
         }
-
-        
-
+        //$this->redirect('list');
     }
+
 
     /**
      * action sendMails
@@ -214,14 +261,18 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         foreach($subscribers as $subscriber)  
         {  
             $collectionNames = "";
+            $collectionNamesHtml = "";
             $websiteNames = "";
+            $websiteNamesHtml = "";
             foreach ($subscriber->getCollections() as $item)
             {
                 if($collectionNames == "")
                 {
                     $collectionNames = $collectionNames . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                    $collectionNamesHtml = $collectionNamesHtml . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                 } else{
                     $collectionNames = $collectionNames . ",\n" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                    $collectionNamesHtml = $collectionNamesHtml . ",</br>" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                 }
             }
 
@@ -230,8 +281,10 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                 if($websiteNames == "")
                 {
                     $websiteNames = $websiteNames . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                    $websiteNamesHtml = $websiteNamesHtml . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                 } else{
                     $websiteNames = $websiteNames . ",\n" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
+                    $websiteNamesHtml = $websiteNamesHtml . ",</br>" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                 }
             }
 
@@ -251,18 +304,19 @@ class SubscriberController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                ->setTo(array($subscriber->getEmail() => $subscriber->getName()))
 
                // Give it a body
-               ->setBody('Collections: '. $collectionsNames ."\n\nWebsites:\n". $websiteNames)
+               ->setBody("Collections: \n". $collectionsNames ."\n\nWebsites:\n". $websiteNames)
 
                // And optionally an alternative body
-               ->addPart('<p>Here is the message itself</p>', 'text/html')
+               ->addPart("<p>Collections: </br> $collectionNamesHtml </p><p>Websites:</br> $websiteNamesHtml </p>" ,'text/html')
 
                // Optionally add any attachments
                //->attach(\Swift_Attachment::fromPath('my-document.pdf'))
 
                // And finally do send it
                ->send()
-             ;
+            ;
         }
+        $this->redirect('list');
     }
 
     
