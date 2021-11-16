@@ -99,11 +99,24 @@ return [
             'label' => 'LLL:EXT:matomo_reporter/Resources/Private/Language/locallang_db.xlf:tx_matomoreporter_domain_model_websites.visits',
             'config' => [
                 'type' => 'select',
-                'renderType' => 'selectSingle',
+                'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'tx_matomoreporter_domain_model_visits',
                 'default' => 0,
-                'minitems' => 0,
-                'maxitems' => 1,
+                'size' => 10,
+                'autoSizeMax' => 30,
+                'maxitems' => 9999,
+                'multiple' => 0,
+                'fieldControl' => [
+                    'editPopup' => [
+                        'disabled' => false,
+                    ],
+                    'addRecord' => [
+                        'disabled' => false,
+                    ],
+                    'listModule' => [
+                        'disabled' => true,
+                    ],
+                ],
             ],
 
         ],

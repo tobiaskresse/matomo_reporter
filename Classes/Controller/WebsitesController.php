@@ -39,5 +39,4 @@ class WebsitesController extends AbstractController
     {
         $this->view->assign('websites', $websites);
     }
-
 }

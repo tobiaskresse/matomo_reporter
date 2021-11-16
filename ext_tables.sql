@@ -16,7 +16,7 @@ CREATE TABLE tx_matomoreporter_domain_model_subscriber (
 CREATE TABLE tx_matomoreporter_domain_model_websites (
 
 	name varchar(255) DEFAULT '' NOT NULL,
-	visits int(11) unsigned DEFAULT '0'
+	visits text NOT NULL
 
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE tx_matomoreporter_domain_model_websites (
 CREATE TABLE tx_matomoreporter_domain_model_collections (
 
 	name varchar(255) DEFAULT '' NOT NULL,
-	visits int(11) unsigned DEFAULT '0'
+	visits text NOT NULL
 
 );
 

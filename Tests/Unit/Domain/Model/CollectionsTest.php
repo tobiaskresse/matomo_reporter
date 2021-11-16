@@ -55,8 +55,9 @@ class CollectionsTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
      */
     public function getVisitsReturnsInitialValueForVisits()
     {
+        $newObjectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
         self::assertEquals(
-            null,
+            $newObjectStorage,
             $this->subject->getVisits()
         );
     }
@@ -64,15 +65,51 @@ class CollectionsTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
     /**
      * @test
      */
-    public function setVisitsForVisitsSetsVisits()
+    public function setVisitsForObjectStorageContainingVisitsSetsVisits()
     {
-        $visitsFixture = new \Slub\MatomoReporter\Domain\Model\Visits();
-        $this->subject->setVisits($visitsFixture);
+        $visit = new \Slub\MatomoReporter\Domain\Model\Visits();
+        $objectStorageHoldingExactlyOneVisits = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $objectStorageHoldingExactlyOneVisits->attach($visit);
+        $this->subject->setVisits($objectStorageHoldingExactlyOneVisits);
 
         self::assertAttributeEquals(
-            $visitsFixture,
+            $objectStorageHoldingExactlyOneVisits,
             'visits',
             $this->subject
         );
+    }
+
+    /**
+     * @test
+     */
+    public function addVisitToObjectStorageHoldingVisits()
+    {
+        $visit = new \Slub\MatomoReporter\Domain\Model\Visits();
+        $visitsObjectStorageMock = $this->getMockBuilder(\TYPO3\CMS\Extbase\Persistence\ObjectStorage::class)
+            ->setMethods(['attach'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $visitsObjectStorageMock->expects(self::once())->method('attach')->with(self::equalTo($visit));
+        $this->inject($this->subject, 'visits', $visitsObjectStorageMock);
+
+        $this->subject->addVisit($visit);
+    }
+
+    /**
+     * @test
+     */
+    public function removeVisitFromObjectStorageHoldingVisits()
+    {
+        $visit = new \Slub\MatomoReporter\Domain\Model\Visits();
+        $visitsObjectStorageMock = $this->getMockBuilder(\TYPO3\CMS\Extbase\Persistence\ObjectStorage::class)
+            ->setMethods(['detach'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $visitsObjectStorageMock->expects(self::once())->method('detach')->with(self::equalTo($visit));
+        $this->inject($this->subject, 'visits', $visitsObjectStorageMock);
+
+        $this->subject->removeVisit($visit);
     }
 }

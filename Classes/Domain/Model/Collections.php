@@ -28,7 +28,7 @@ class Collections extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * visits
      * 
-     * @var \Slub\MatomoReporter\Domain\Model\Visits
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\MatomoReporter\Domain\Model\Visits>
      */
     protected $visits = null;
 
@@ -54,9 +54,54 @@ class Collections extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
+     * __construct
+     */
+    public function __construct()
+    {
+
+        //Do not remove the next line: It would break the functionality
+        $this->initStorageObjects();
+    }
+
+    /**
+     * Initializes all ObjectStorage properties
+     * Do not modify this method!
+     * It will be rewritten on each save in the extension builder
+     * You may modify the constructor of this class instead
+     * 
+     * @return void
+     */
+    protected function initStorageObjects()
+    {
+        $this->visits = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
+
+    /**
+     * Adds a Visits
+     * 
+     * @param \Slub\MatomoReporter\Domain\Model\Visits $visit
+     * @return void
+     */
+    public function addVisit(\Slub\MatomoReporter\Domain\Model\Visits $visit)
+    {
+        $this->visits->attach($visit);
+    }
+
+    /**
+     * Removes a Visits
+     * 
+     * @param \Slub\MatomoReporter\Domain\Model\Visits $visitToRemove The Visits to be removed
+     * @return void
+     */
+    public function removeVisit(\Slub\MatomoReporter\Domain\Model\Visits $visitToRemove)
+    {
+        $this->visits->detach($visitToRemove);
+    }
+
+    /**
      * Returns the visits
      * 
-     * @return \Slub\MatomoReporter\Domain\Model\Visits $visits
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\MatomoReporter\Domain\Model\Visits> $visits
      */
     public function getVisits()
     {
@@ -66,10 +111,10 @@ class Collections extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the visits
      * 
-     * @param \Slub\MatomoReporter\Domain\Model\Visits $visits
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\MatomoReporter\Domain\Model\Visits> $visits
      * @return void
      */
-    public function setVisits(\Slub\MatomoReporter\Domain\Model\Visits $visits)
+    public function setVisits(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $visits)
     {
         $this->visits = $visits;
     }

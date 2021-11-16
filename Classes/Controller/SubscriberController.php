@@ -18,20 +18,20 @@ namespace Slub\MatomoReporter\Controller;
 class SubscriberController extends AbstractController
 {
 
-  //  /**
-  //   * subscriberRepository
-  //   * 
-  //   * @var \Slub\MatomoReporter\Domain\Repository\SubscriberRepository
-  //   */
-  //  protected $subscriberRepository = null;
-//
-  //  /**
-  //   * @param \Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository
-  //   */
-  //  public function injectSubscriberRepository(\Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository)
-  //  {
-  //      $this->subscriberRepository = $subscriberRepository;
-  //  }
+    //  /**
+    //   * subscriberRepository
+    //   *
+    //   * @var \Slub\MatomoReporter\Domain\Repository\SubscriberRepository
+    //   */
+    //  protected $subscriberRepository = null;
+    //
+    //  /**
+    //   * @param \Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository
+    //   */
+    //  public function injectSubscriberRepository(\Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository)
+    //  {
+    //      $this->subscriberRepository = $subscriberRepository;
+    //  }
     /**
      * action list
      * 
@@ -42,7 +42,7 @@ class SubscriberController extends AbstractController
         $subscribers = $this->subscriberRepository->findAll();
         $this->view->assign('subscribers', $subscribers);
     }
-    
+
     /**
      * action show
      * 
@@ -53,18 +53,18 @@ class SubscriberController extends AbstractController
     {
         $this->view->assign('subscriber', $subscriber);
     }
-    
+
     /**
      * action new
      * 
      * @return void
      */
     public function newAction()
-    {            
+    {
+
         //$this->updateMatomoDataAction();
-        
     }
-    
+
     /**
      * action create
      * 
@@ -73,12 +73,11 @@ class SubscriberController extends AbstractController
      */
     public function createAction(\Slub\MatomoReporter\Domain\Model\Subscriber $newSubscriber)
     {
-        
         $this->addFlashMessage('The object was created. Please be aware that this action is publicly accessible unless you implement an access check. See https://docs.typo3.org/typo3cms/extensions/extension_builder/User/Index.html', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING);
         $this->subscriberRepository->add($newSubscriber);
         $this->redirect('list');
     }
-    
+
     /**
      * action edit
      * 
@@ -90,7 +89,7 @@ class SubscriberController extends AbstractController
     {
         $this->view->assign('subscriber', $subscriber);
     }
-    
+
     /**
      * action update
      * 
@@ -103,7 +102,7 @@ class SubscriberController extends AbstractController
         $this->subscriberRepository->update($subscriber);
         $this->redirect('list');
     }
-    
+
     /**
      * action delete
      * 
@@ -116,140 +115,133 @@ class SubscriberController extends AbstractController
         $this->subscriberRepository->remove($subscriber);
         $this->redirect('list');
     }
-    
     public function createMatomoDataAction()
     {
+
         //$date = new \DateTime;
-        $token = "";
+        $token = "c4f74d28bff8907dca5445c7c0893c6e";
         $url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=2021-05-05&idSubtable=1&format=JSON&token_auth=" . $token;
+
         // variable DateTime
         //$url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=" . $date->format('y-m-d') . "&idSubtable=1&format=JSON&token_auth=" . $token;
         $json_raw;
         $json_done;
         $json_raw = file_get_contents($url);
         $json_done = json_decode($json_raw, true);
-        
-        
     }
-    
+
     //GerneralUtility Make Instance (objct)
     /**
      * action updateMatomoData
-     * 
      * Updates the information that is attached to the Subscribers
      * 
      * @return void
      */
     public function updateMatomoDataAction()
     {
-        $date = new \DateTime;
+        $date = new \DateTime();
+
         //var_dump($date);
-        $token = "";
+        $token = "c4f74d28bff8907dca5445c7c0893c6e";
         $url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=2021-05-05&idSubtable=1&format=JSON&token_auth=" . $token;
+
         // variable DateTime
         //$url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=" . $date->format('y-m-d') . "&idSubtable=1&format=JSON&token_auth=" . $token;
         $json_raw;
         $json_done;
         $json_raw = file_get_contents($url);
         $json_done = json_decode($json_raw, true);
-        
         $subscribers = $this->subscriberRepository->findAll();
-        
-        foreach($subscribers as $subscriber)
-        {
+        foreach ($subscribers as $subscriber) {
             $collections = $subscriber->getCollections();
             $websites = $subscriber->getWebsites();
-            
             $newJsonCollections = array();
             $newJsonWebsites = array();
-            
             //adding the things that arent in there
-            foreach($json_done as $item)
-            {
-                foreach($collections as $collection)
-                {
-                    if($item["label"] == $collection->getName())
-                    {
-                        break;
-                    }
-                    else{
-                        array_push($newJsonCollections, $collection);
+            //maybe an own action or integration with the other part of the action
+            foreach ($collections as $collection) {
+                $isNew = true;
+                foreach ($json_done as $item) {
+                    if ($item["label"] == $collection->getName()) {
+                        $isNotNew = false;
                     }
                 }
+                if($isNew){
+                array_push($newJsonCollections, $collection);
+                }
+            }
 
-
-                foreach($websites as $website)
-                {
-                    if($item["label"] == $website->getName())
-                    {
-                        break;
-                    }else{
-                        array_push($newJsonWebsites, $website);
+            foreach ($websites as $website) {
+                $isNew = true;
+                foreach ($json_done as $item) {
+                    if ($item["label"] == $website->getName()) {
+                        $isNew = false;
                     }
                 }
             }
+            if($isNew){
+                array_push($newJsonCollections, $collection);
+            }
+            
+
             //var_dump($newJsonCollections);
             var_dump($newJsonWebsites);
 
-
             //Collections
-            foreach($collections as $collection)
-            { //how do i get an comparison between the collections I have and the new ones, to find witch new are new and witch are already there
-                foreach($json_done as $item)
-                {
-                    if($collection->getName() == $item["label"])
-                    {
-                        if(is_null($collection->getVisits()) == false)
-                        {
+            foreach ($collections as $collection) {
+
+                //how do i get an comparison between the collections I have and the new ones, to find witch new are new and witch are already there
+                foreach ($json_done as $item) {
+                    if ($collection->getName() == $item["label"]) {
+                        if (is_null($collection->getVisits()) == false) {
                             $visits = $collection->getVisits();
                             $visits->setUniqueVisitors($item["sum_daily_nb_uniq_visitors"]);
                             $visits->setPageViews($item["nb_visits"]);
+
                             //$visits->setMonth($date);
                             $collection->setVisits($visits);
-                        }else 
-                        {
-                            //maybe an flash message warning 
+                        } else {
+
+                            //maybe an flash message warning
                         }
-                    }else{}
+                    } else {
+                    }
                 }
             }
-            
-            //Websites
-            foreach($websites as $website)
-            {
-                foreach($json_done as $item)
-                {
-                    //repeat, for the most part, of what is written above
 
-                    if($website->getName() == $item["label"])
-                    {
-                        if(is_null($website->getVisits()) == false)
-                        {
+            //Websites
+            foreach ($websites as $website) {
+                foreach ($json_done as $item) {
+
+                    //repeat, for the most part, of what is written above
+                    if ($website->getName() == $item["label"]) {
+                        if (is_null($website->getVisits()) == false) {
                             $visits = $website->getVisits();
                             $visits->setUniqueVisitors($item["sum_daily_nb_uniq_visitors"]);
+
                             //$visits->setUniqueVisitors(100);
                             $visits->setPageViews($item["nb_visits"]);
+
                             //$visits->setMonth($date);
                             $website->setVisits($visits);
-                        }else 
-                        {
+                        } else {
+
                             //maybe an flash message warning
-                            
                         }
-                    }else{}
+                    } else {
+                    }
                 }
             }
             $subscriber->setCollections($collections);
             $subscriber->setWebsites($websites);
             $this->subscriberRepository->update($subscriber);
         }
+
         //$this->redirect('list');
     }
 
-
     /**
      * action sendMails
-     * 
      * sends an Email to all subscribers
      * 
      * @return void
@@ -257,32 +249,25 @@ class SubscriberController extends AbstractController
     public function sendMailsAction()
     {
         $subscribers = $this->subscriberRepository->findAll();
-        
-        foreach($subscribers as $subscriber)  
-        {  
+        foreach ($subscribers as $subscriber) {
             $collectionNames = "";
             $collectionNamesHtml = "";
             $websiteNames = "";
             $websiteNamesHtml = "";
-            foreach ($subscriber->getCollections() as $item)
-            {
-                if($collectionNames == "")
-                {
+            foreach ($subscriber->getCollections() as $item) {
+                if ($collectionNames == "") {
                     $collectionNames = $collectionNames . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                     $collectionNamesHtml = $collectionNamesHtml . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
-                } else{
+                } else {
                     $collectionNames = $collectionNames . ",\n" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                     $collectionNamesHtml = $collectionNamesHtml . ",</br>" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                 }
             }
-
-            foreach ($subscriber->getWebsites() as $item) 
-            {
-                if($websiteNames == "")
-                {
+            foreach ($subscriber->getWebsites() as $item) {
+                if ($websiteNames == "") {
                     $websiteNames = $websiteNames . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                     $websiteNamesHtml = $websiteNamesHtml . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
-                } else{
+                } else {
                     $websiteNames = $websiteNames . ",\n" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                     $websiteNamesHtml = $websiteNamesHtml . ",</br>" . $item->getName() . " with " . $item->getVisits()->getPageViews() . " Page Visits and " . $item->getVisits()->getUniqueVisitors() . " unique Visitors";
                 }
@@ -292,33 +277,16 @@ class SubscriberController extends AbstractController
             $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
 
             // Prepare and send the message
-            $mail
-
-               // Give the message a subject
-               ->setSubject('Monthly Report')
-
-               // Set the From address with an associative array
-               ->setFrom(array('Tobias.kresse@slub-dresden.de' => 'John Doe'))
-
-               // Set the To addresses with an associative array
-               ->setTo(array($subscriber->getEmail() => $subscriber->getName()))
-
-               // Give it a body
-               ->setBody("Collections: \n". $collectionsNames ."\n\nWebsites:\n". $websiteNames)
-
-               // And optionally an alternative body
-               ->addPart("<p>Collections: </br> $collectionNamesHtml </p><p>Websites:</br> $websiteNamesHtml </p>" ,'text/html')
-
-               // Optionally add any attachments
-               //->attach(\Swift_Attachment::fromPath('my-document.pdf'))
-
-               // And finally do send it
-               ->send()
-            ;
+            $mail->setSubject('Monthly Report')->setFrom(array('Tobias.kresse@slub-dresden.de' => 'John Doe'))->setTo(array($subscriber->getEmail() => $subscriber->getName()))->setBody("Collections: \n" . $collectionsNames . "\n\nWebsites:\n" . $websiteNames)->addPart("<p>Collections: </br> {$collectionNamesHtml} </p><p>Websites:</br> {$websiteNamesHtml} </p>", 'text/html')->send();
         }
         $this->redirect('list');
     }
 
-    
-    
+    /**
+     * @param \Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository
+     */
+    public function injectSubscriberRepository(\Slub\MatomoReporter\Domain\Repository\SubscriberRepository $subscriberRepository)
+    {
+        $this->subscriberRepository = $subscriberRepository;
+    }
 }
