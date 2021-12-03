@@ -48,6 +48,18 @@
 			<trans-unit id="tx_matomoreporter_domain_model_visits.page_views" resname="tx_matomoreporter_domain_model_visits.page_views">
 				<source>Page Views</source>
 			</trans-unit>
+			<trans-unit id="UpdateFromMatomoTask.name">
+				<source>Update From Matomo</source>
+			</trans-unit>
+			<trans-unit id="UpdateFromMatomoTask.description">
+				<source>get the Statistics from Matomo into Local Database</source>
+			</trans-unit>
+			<trans-unit id="SendMailsTask.name">
+				<source>Send Mails</source>
+			</trans-unit>
+			<trans-unit id="SendMailsTask.description">
+				<source>Sends the Mails</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

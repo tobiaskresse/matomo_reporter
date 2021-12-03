@@ -137,7 +137,7 @@ class SubscriberController extends AbstractController
      * 
      * @return void
      */
-    public function updateMatomoDataAction()
+    public function updateMatomoDataAction($SiteId = "412")
     {
         $date = new \DateTime();
 
@@ -146,7 +146,7 @@ class SubscriberController extends AbstractController
         $url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=2021-05-05&idSubtable=1&format=JSON&token_auth=" . $token;
 
         // variable DateTime
-        //$url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=412&period=month&date=" . $date->format('y-m-d') . "&idSubtable=1&format=JSON&token_auth=" . $token;
+        //$url = "https://matomo.slub-dresden.de/index.php?module=API&method=CustomVariables.getCustomVariablesValuesFromNameId&idSite=". $SiteId ."&period=month&date=" . $date->format('y-m-d') . "&idSubtable=1&format=JSON&token_auth=" . $token;
         $json_raw;
         $json_done;
         $json_raw = file_get_contents($url);
