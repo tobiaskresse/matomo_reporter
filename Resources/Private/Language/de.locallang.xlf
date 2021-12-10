@@ -4,7 +4,7 @@
 		<header/>
 		<body>
 			<trans-unit id="tx_matomoreporter_domain_model_subscriber" resname="tx_matomoreporter_domain_model_subscriber">
-				<source>Subscriber</source>
+				<source>Abbonent</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_subscriber.name" resname="tx_matomoreporter_domain_model_subscriber.name">
 				<source>Name</source>
@@ -16,7 +16,7 @@
 				<source>Websites</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_subscriber.collections" resname="tx_matomoreporter_domain_model_subscriber.collections">
-				<source>Collections</source>
+				<source>Kollektionen</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_websites" resname="tx_matomoreporter_domain_model_websites">
 				<source>Websites</source>
@@ -25,7 +25,7 @@
 				<source>Name</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_websites.visits" resname="tx_matomoreporter_domain_model_websites.visits">
-				<source>Visits</source>
+				<source>Besuche</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_collections" resname="tx_matomoreporter_domain_model_collections">
 				<source>Collections</source>
@@ -34,31 +34,31 @@
 				<source>Name</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_collections.visits" resname="tx_matomoreporter_domain_model_collections.visits">
-				<source>Visits</source>
+				<source>Besuche</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_visits" resname="tx_matomoreporter_domain_model_visits">
-				<source>Visits</source>
+				<source>Beuche</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_visits.month" resname="tx_matomoreporter_domain_model_visits.month">
-				<source>Month</source>
+				<source>Monat</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_visits.unique_visitors" resname="tx_matomoreporter_domain_model_visits.unique_visitors">
-				<source>Unique Visitors</source>
+				<source>Einzigartige Besucher</source>
 			</trans-unit>
 			<trans-unit id="tx_matomoreporter_domain_model_visits.page_views" resname="tx_matomoreporter_domain_model_visits.page_views">
-				<source>Page Views</source>
+				<source>Seiten Besuche</source>
 			</trans-unit>
 			<trans-unit id="UpdateFromMatomoTask.name">
-				<source>Update From Matomo</source>
+				<source>Update von Matomo</source>
 			</trans-unit>
 			<trans-unit id="UpdateFromMatomoTask.description">
-				<source>get the Statistics from Matomo into Local Database</source>
+				<source>holt die Statistiken von Matomo in die Lokale Datenbank</source>
 			</trans-unit>
 			<trans-unit id="SendMailsTask.name">
-				<source>Send Mails</source>
+				<source>Sende Mails</source>
 			</trans-unit>
 			<trans-unit id="SendMailsTask.description">
-				<source>Sends the Mails</source>
+				<source>Sendet die Mails</source>
 			</trans-unit>
 		</body>
 	</file>
